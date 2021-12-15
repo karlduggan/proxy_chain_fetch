@@ -20,11 +20,13 @@ def _check_port_is_open(ip, port):
     a_socket.settimeout(None)
 
     # if the port works then we get 0
-    if result_of_check == 0:
+    try:
+        if result_of_check == 0:
+            a_socket.close()
+            return True
+    except:
         a_socket.close()
-        return True
-    a_socket.close()
-    return False
+        return False
 
 
 def find_port(ip_list):
@@ -33,13 +35,13 @@ def find_port(ip_list):
     common_port = [8080, 3128, 3129, 1080,
                    4145, 8975, 1976, 999, 9090, 10101, ]
     for ip in ip_list[0]:
-        try:
-            for port in common_port:
+        for port in common_port:
+            try:
                 if _check_port_is_open(ip, port) == True:
                     print(ip, port)
                     working_ip_port_list.append((ip, port))
-        except:
-            pass
+            except:
+                pass
     print(">> The number of active proxies are: " +
           str(len(working_ip_port_list)))
     return working_ip_port_list
@@ -124,10 +126,3 @@ proxy_list = proxy_scraper()
 # Get the random top 5 proxies scraped from the website.
 topFive = top_proxies(proxy_list)
 li = find_port(topFive)
-
-
-
-
-
-
-
